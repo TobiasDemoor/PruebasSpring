@@ -1,8 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const usersRoutes = require('./api/routes/users');
 const codesRoutes = require('./api/routes/codes');
 const app = express();
+
+mongoose.connect('mongodb://192.168.1.110:27017/pruebadb', { useNewUrlParser: true }, (err) => {
+    if (err) throw err;
+    console.log('Successfully connected to .');
+});
+
+mongoose.Promise = global.Promise;
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
