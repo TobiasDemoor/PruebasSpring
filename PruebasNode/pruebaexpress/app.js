@@ -5,7 +5,10 @@ const usersRoutes = require('./api/routes/users');
 const codesRoutes = require('./api/routes/codes');
 const app = express();
 
-mongoose.connect('mongodb://192.168.1.110:27017/pruebadb', { useNewUrlParser: true }, (err) => {
+mongoose.connect(
+    'mongodb://192.168.1.110/pruebadb',
+    { useNewUrlParser: true, useUnifiedTopology : true },
+    (err) => {
     if (err) throw err;
     console.log('Successfully connected to .');
 });
