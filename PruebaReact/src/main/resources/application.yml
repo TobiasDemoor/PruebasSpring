@@ -1,0 +1,18 @@
+server:
+    port: 8080
+spring:
+    profiles:
+        active: @spring.profiles.active@
+    security:
+        oauth2:
+            client:
+                registration:
+                    okta:
+                        client-id: 0oak0uyl8KZt2Bm9j4x6
+                        client-secret: 2D8VE4Mcq4IVe6Qqc4AgdgSPxihUqN-SQn3aE41A
+                provider:
+                    okta:
+                        authorization-uri: https://dev-976014.okta.com/oauth2/default/v1/authorize
+                        token-uri: https://dev-976014.okta.com/oauth2/default/v1/token
+                        user-info-uri: https://dev-976014.okta.com/oauth2/default/v1/userinfo
+                        jwk-set-uri: https://dev-976014.okta.com/oauth2/default/v1/keys
