@@ -4,6 +4,7 @@ import AppNavbar from './AppNavbar.jsx';
 import { Link } from 'react-router-dom';
 import { Button, Container } from 'reactstrap';
 import { withCookies } from 'react-cookie';
+import { getUser, logout } from '../services/service';
 
 class Home extends Component {
     state = {
@@ -21,8 +22,7 @@ class Home extends Component {
     }
 
     async componentDidMount() {
-        const response = await fetch('/api/user', { credentials: 'include' });
-        const body = await response.text();
+        const body = await getUser();
         if (body === '') {
             this.setState({ isAuthenticated: false });
         } else {
@@ -35,15 +35,12 @@ class Home extends Component {
         if (port === ':3000') {
             port = ':8080';
         }
+        console.log(window.location.hostname + port + '/private');
         window.location.href = '//' + window.location.hostname + port + '/private';
     }
 
     logout() {
-        fetch('/api/logout', { method: 'POST', credentials: 'include', headers: { 'X-XSRF-TOKEN': this.state.csrfToken } })
-            .then(res => res.json()).then(response => {
-                window.location.href = response.logoutUrl + "?id_token_hint=" +
-                    response.idToken + "&post_logout_redirect_uri=" + window.location.origin;
-            })
+        logout(this.state.csrfToken);
     }
 
     render() {

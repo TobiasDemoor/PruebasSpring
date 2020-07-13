@@ -4,6 +4,7 @@ import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
 import AppNavbar from './AppNavbar.jsx';
 import { instanceOf } from 'prop-types';
 import { Cookies, withCookies } from 'react-cookie';
+import { loadGroup, editGroup } from '../services/service';
 
 class GroupEdit extends Component {
     static propTypes = {
@@ -32,12 +33,9 @@ class GroupEdit extends Component {
 
     async componentDidMount() {
         if (this.props.match.params.id !== 'new') {
-            try {
-                const group = await (await fetch(`/api/group/${this.props.match.params.id}`, { credentials: 'include' })).json();
-                this.setState({ item: group });
-            } catch (error) {
-                this.props.history.push('/');
-            }
+            loadGroup(this.props.match.params.id)
+                .then(group => this.setState({ item: group }))
+                .catch(error => this.props.history.push('/'));
         }
     }
 
@@ -52,16 +50,7 @@ class GroupEdit extends Component {
         event.preventDefault();
         const { item, csrfToken } = this.state;
 
-        await fetch('/api/group' + (item.id ? '/' + item.id : ''), {
-            method: (item.id) ? 'PUT' : 'POST',
-            headers: {
-                'X-XSRF-TOKEN': csrfToken,
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(item),
-            credentials: 'include'
-        });
+        await editGroup(csrfToken, item);
         this.props.history.push('/groups');
     }
 
