@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class DevSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private final String clientUrl = "http://localhost:3000";
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -33,9 +35,8 @@ public class DevSecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .cors().configurationSource((request -> {
-                    CorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
                     CorsConfiguration config = new CorsConfiguration();
-                    config.addAllowedOrigin("http://localhost:3000");
+                    config.addAllowedOrigin(this.clientUrl);
                     config.addAllowedMethod(HttpMethod.DELETE);
                     config.addAllowedMethod(HttpMethod.GET);
                     config.addAllowedMethod(HttpMethod.OPTIONS);
@@ -44,8 +45,8 @@ public class DevSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     config.setAllowCredentials(true);
                     return config;
                 })).and()
-                .csrf().disable()
-                .authorizeRequests()
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .and().authorizeRequests()
                 .antMatchers(
                         HttpMethod.GET,
                         "/**/*.{js,html,css}"
@@ -60,13 +61,14 @@ public class DevSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage("http://localhost:3000/login")
+                .formLogin().loginPage(this.clientUrl+"/login")
                 .loginProcessingUrl("/api/login")
-                .defaultSuccessUrl("http://localhost:3000/",true)
-                .failureUrl("http://localhost:3000/login?error=true")
+                .defaultSuccessUrl(this.clientUrl+"/",true)
+                .failureUrl(this.clientUrl+"/login?error=true")
                 .and()
                 .logout()
                 .logoutUrl("/api/logout")
+                .logoutSuccessUrl(this.clientUrl+"/")
                 .deleteCookies("JSESSIONID");
     }
 

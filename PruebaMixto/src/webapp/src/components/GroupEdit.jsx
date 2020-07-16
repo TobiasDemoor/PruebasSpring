@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import PropTypes from 'prop-types';
 import {loadGroup, submitGroup} from "../store/groups/groupsActions";
 import AppNavbar from "./AppNavbar";
 import {Typography, Container, TextField, Button} from "@material-ui/core";
@@ -99,7 +98,7 @@ class GroupEdit extends Component {
                         </div>
                         <div className={classes.buttons}>
                             <Button variant="contained" color="primary" type="submit">Save</Button>{' '}
-                            <Button variant="contained" color="secondary" tag={Link} to="/groups">Cancel</Button>
+                            <Button variant="contained" color="secondary" component={Link} to="/groups">Cancel</Button>
                         </div>
                     </form>
                 </Container>

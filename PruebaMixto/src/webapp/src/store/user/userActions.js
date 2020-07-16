@@ -40,17 +40,12 @@ export function login(data) {
     return function (dispatch, getState) {
         dispatch({type: actionTypes.loginRequest})
         userServices.login(getState().user.csrfToken, data)
-            .then(() => {
-                dispatch({type: actionTypes.loginSuccess});
-                dispatch(getUser());
-            })
+            .then(() => dispatch({
+                type: actionTypes.loginSuccess
+            }))
             .catch(error => dispatch({
                 type: actionTypes.loginError,
                 error: error.message
             }));
     }
-}
-
-export function logout() {
-
 }

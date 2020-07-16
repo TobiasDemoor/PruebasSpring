@@ -11,6 +11,10 @@ class Home extends Component {
         this.props.getUser();
     }
 
+    logout() {
+        document.getElementById("logoutSubmit").click()
+    }
+
     render() {
         const {isLoading, isAuthenticated, user, csrfToken} = this.props;
         let result;
@@ -19,11 +23,15 @@ class Home extends Component {
         } else {
             let message, buttons
             if (isAuthenticated) {
-                message = <p>Welcome, {user.name}</p>;
-                buttons = (     //TODO: buttons
+                message = <p>Welcome, {user.username}</p>;
+                buttons = (
                     <div>
                         <Button component={Link} to="/groups">Manage JUG Tour</Button>
-                        <Button component={Link} to="/login">Logout</Button>
+                        <Button onClick={this.logout}>Logout</Button>
+                        <form method="POST" action="/api/logout">
+                            <input name="_csrf" type="hidden" value={csrfToken}/>
+                            <button id="logoutSubmit" type="submit" hidden/>
+                        </form>
                     </div>
                 );
             } else {

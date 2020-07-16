@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom';
 import {withStyles} from '@material-ui/core/styles';
 import {AppBar, Button, Toolbar, Typography} from '@material-ui/core'
@@ -22,7 +22,7 @@ function AppNavbar(props) {
                     <Typography variant="h4" className={classes.title}>
                         JUG
                     </Typography>
-                    <Button tag={Link} to="/">Home</Button>
+                    <Button component={Link} to="/">Home</Button>
                     <Dropdown/>
                 </Toolbar>
             </AppBar>

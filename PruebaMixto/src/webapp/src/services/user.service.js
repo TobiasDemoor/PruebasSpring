@@ -11,18 +11,21 @@ export function logout(csrfToken) {
     return fetch(`${baseURL}/api/logout`, {
         method: 'POST',
         headers: {'X-XSRF-TOKEN': csrfToken},
+        body: JSON.stringify({
+            _csrf: csrfToken
+        }),
         credentials: 'include'
-    })
-        .then(res => res.json()).then(response => {
-            window.location.href = response.logoutUrl + "?id_token_hint=" +
-                response.idToken + "&post_logout_redirect_uri=" + window.location.origin;
-        })
+    }).then(handleResponse);
 }
 
 export function login(csrfToken, data) {
     return fetch(`${baseURL}/api/login`, {
         method: 'POST',
-        headers: {'X-XSRF-TOKEN': csrfToken},
+        headers: {
+            'X-XSRF-TOKEN': csrfToken,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
             ...data,
             _csrf: csrfToken

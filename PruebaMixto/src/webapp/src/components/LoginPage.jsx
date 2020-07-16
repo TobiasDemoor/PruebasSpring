@@ -37,18 +37,21 @@ class LoginPage extends Component {
         }
 
         return (
-            <form method="POST" action={`${process.env.REACT_APP_API_BASE_URL}/api/login`}>
+            <div>
                 <TextField fullWidth label="Username" id="username" value={username}
                            onChange={this.handleChange} autoComplete="name"/>
                 <TextField fullWidth label="Password" id="password" type="password" value={password}
                            onChange={this.handleChange} autoComplete="name"/>
-                <input name="username" type="hidden" value={username}/>
-                <input name="password" type="hidden" value={password}/>
-                <input name="_csrf" type="hidden" value={csrfToken}/>
-                <Button variant="contained" type="submit">
+                <Button variant="contained" onClick={() => document.getElementById("loginSubmit").click()}>
                     Login
                 </Button>
-            </form>
+                <form method="POST" action={"/api/login"}>
+                    <input name="username" type="hidden" value={username}/>
+                    <input name="password" type="hidden" value={password}/>
+                    <input name="_csrf" type="hidden" value={csrfToken}/>
+                    <button id="loginSubmit" type="submit" hidden/>
+                </form>
+            </div>
         );
     }
 }
