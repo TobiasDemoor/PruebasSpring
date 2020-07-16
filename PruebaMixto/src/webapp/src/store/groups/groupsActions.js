@@ -35,33 +35,52 @@ export function loadGroups() {
 
 export function loadGroup(id) {
     return function (dispatch) {
-        dispatch({type: actionTypes.loadGroupsRequest});
+        dispatch({type: actionTypes.loadGroupRequest});
         groupsServices.loadGroup(id)
             .then(
-                response => dispatch({
-                    type: actionTypes.loadGroupsSuccess,
-                    payload: {
-                        [id]: response
-                    }
-                })
+                response => {
+                    console.log(response);
+                    dispatch({
+                        type: actionTypes.loadGroupSuccess,
+                        payload: {
+                            item: response
+                        }
+                    })
+                }
             )
             .catch(
                 error => dispatch({
-                    type: actionTypes.loadGroupsError,
+                    type: actionTypes.loadGroupError,
                     error
                 })
             );
     }
 }
 
+export function loadEmptyGroup() {
+    return {
+        type: actionTypes.loadGroupsSuccess,
+        payload: {
+            item: {
+                name: '',
+                address: '',
+                city: '',
+                stateOrProvince: '',
+                country: '',
+                postalCode: ''
+            }
+        }
+    };
+}
+
 export function removeGroup(id) {
     return function(dispatch, getState) {
         // TODO
-        groupsServices.removeGroup(getState().csrfToken, id).then();
+        groupsServices.removeGroup(getState().user.csrfToken, id).then();
     }
 }
 
-export function editGroup(item) {
+export function submitGroup(item) {
 
 }
 

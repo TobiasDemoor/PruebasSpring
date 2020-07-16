@@ -1,69 +1,34 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import {AppBar, Button, Grow, Popper, ClickAwayListener, MenuList, MenuItem} from '@material-ui/core'
+import {withStyles} from '@material-ui/core/styles';
+import {AppBar, Button, Toolbar, Typography} from '@material-ui/core'
+import Dropdown from './Dropdown';
 
-class AppNavbar extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {isOpen: false};
-        this.toggle = this.toggle.bind(this);
-        this.close = this.close.bind(this);
-        this.handleListKeyDown = this.handleListKeyDown.bind(this);
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+    },
+    title: {
+        flexGrow: 1,
     }
+})
 
-    toggle() {
-        this.setState({
-            isOpen: !this.state.isOpen
-        });
-    }
-
-    close() {
-        this.setState({
-            isOpen: false
-        })
-    }
-
-    handleListKeyDown(event) {
-        if (event.key === 'Tab') {
-            event.preventDefault();
-            this.close();
-        }
-    }
-
-    render() {
-        const anchorRef = React.useRef(null);
-        const isOpen = this.state.isOpen;
-        const {toggle, close, handleListKeyDown} = this.state;
-        return (
-            <AppBar color="dark" dark expand="md">
-                <Button tag={Link} to="/">Home</Button>
-                <Button
-                    ref={anchorRef}
-                    aria-controls={isOpen ? 'menu-list-grow' : undefined}
-                    aria-haspopup="true"
-                    onClick={toggle}
-                >
-                    Toggle Menu Grow
-                </Button>
-                <Popper open={isOpen} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                    {({TransitionProps, placement}) => (
-                        <Grow
-                            {...TransitionProps}
-                            style={{transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom'}}
-                        >
-                            <ClickAwayListener onClickAway={close}>
-                                <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                    <MenuItem onClick={close}>Profile</MenuItem>
-                                    <MenuItem onClick={close}>My account</MenuItem>
-                                    <MenuItem onClick={close}>Logout</MenuItem>
-                                </MenuList>
-                            </ClickAwayListener>
-                        </Grow>
-                    )}
-                </Popper>
+function AppNavbar(props) {
+    const {classes} = props;
+    return (
+        <nav className={classes.root}>
+            <AppBar position="static" color="primary" expand="md">
+                <Toolbar>
+                    <Typography variant="h4" className={classes.title}>
+                        JUG
+                    </Typography>
+                    <Button tag={Link} to="/">Home</Button>
+                    <Dropdown/>
+                </Toolbar>
             </AppBar>
-        );
-    }
+        </nav>
+    );
+
 }
 
-export default AppNavbar;
+export default withStyles(styles)(AppNavbar);

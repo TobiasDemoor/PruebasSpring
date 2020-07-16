@@ -1,14 +1,13 @@
-// import AuthenticationError from "../errors/AuthenticationError";
 import handleResponse from "./response.service";
 
 const baseURL = 'http://localhost:8080';
 
-function getUser() {
+export function getUser() {
     return fetch(`${baseURL}/api/user`, {credentials: 'include'})
         .then(handleResponse);
 }
 
-function logout(csrfToken) {
+export function logout(csrfToken) {
     return fetch(`${baseURL}/api/logout`, {
         method: 'POST',
         headers: {'X-XSRF-TOKEN': csrfToken},
@@ -20,5 +19,13 @@ function logout(csrfToken) {
         })
 }
 
-
-export {getUser, logout};
+export function login(csrfToken, data) {
+    return fetch(`${baseURL}/api/login`, {
+        method: 'POST',
+        headers: {'X-XSRF-TOKEN': csrfToken},
+        body: JSON.stringify({
+            ...data,
+            _csrf: csrfToken
+        }),
+    }).then(handleResponse);
+}

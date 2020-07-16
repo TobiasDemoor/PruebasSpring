@@ -8,13 +8,13 @@ function loadGroups() {
 }
 
 function loadGroup(id) {
-    return fetch(`${baseURL}/api/group/${id}`, {
+    return fetch(`${baseURL}/api/groups/${id}`, {
         credentials: 'include'
     }).then(handleResponse);
 }
 
 function removeGroup(csrfToken, id) {
-    return fetch(`${baseURL}/api/group/${id}`, {
+    return fetch(`${baseURL}/api/groups/${id}`, {
         method: 'DELETE',
         headers: {
             'X-XSRF-TOKEN': csrfToken,
@@ -26,7 +26,7 @@ function removeGroup(csrfToken, id) {
 }
 
 function editGroup(csrfToken, item) {
-    return fetch(`${baseURL}/api/group` + (item.id ? '/' + item.id : ''), {
+    return fetch(`${baseURL}/api/groups` + (item.id ? '/' + item.id : ''), {
         method: (item.id) ? 'PUT' : 'POST',
         headers: {
             'X-XSRF-TOKEN': csrfToken,

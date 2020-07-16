@@ -37,7 +37,7 @@ export default (state = stateInit, {type, payload, error}) => {
             return {
                 ...state,
                 isLoading: false,
-                ...payload,
+                item: payload.item,
                 error: undefined
             }
         case actionTypes.loadGroupError:

@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {Link, withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {ButtonGroup, Button, Container, Table} from "@material-ui/core";
-import {loadGroups, removeGroup} from "../services/groups.service";
+import {loadGroups, removeGroup} from "../store/groups/groupsActions";
 import AppNavbar from './AppNavbar';
 
 class GroupList extends Component {
@@ -25,7 +25,7 @@ class GroupList extends Component {
                         const address = `${group.address || ''} ${group.city || ''} ${group.stateOrProvince || ''}`;
                         return (
                             <tr key={group.id}>
-                                <td style={{whiteSpace: 'nowrap'}}>{group.name}</td>
+                                <td>{group.name}</td>
                                 <td>{address}</td>
                                 <td>{group.events.map(event => {
                                     return (
@@ -40,9 +40,9 @@ class GroupList extends Component {
                                 })}</td>
                                 <td>
                                     <ButtonGroup>
-                                        <Button size="sm" color="primary" tag={Link}
+                                        <Button size="small" color="primary" component={Link}
                                                 to={"/groups/" + group.id}>Edit</Button>
-                                        <Button size="sm" color="danger"
+                                        <Button size="small" color="secondary"
                                                 onClick={() => remove(group.id)}>Delete</Button>
                                     </ButtonGroup>
                                 </td>
@@ -52,18 +52,18 @@ class GroupList extends Component {
                 return (
                     <div>
                         <AppNavbar/>
-                        <Container fluid>
-                            <div className="float-right">
-                                <Button color="success" tag={Link} to="/groups/new">Add Group</Button>
+                        <Container>
+                            <div>
+                                <Button color="primary" component={Link} to="/groups/new">Add Group</Button>
                             </div>
                             <h3>My HUG Tour</h3>
-                            <Table className="mt-4">
+                            <Table>
                                 <thead>
                                 <tr>
-                                    <th style="width:20%">Name</th>
-                                    <th style="width:20%">Location</th>
+                                    <th>Name</th>
+                                    <th>Location</th>
                                     <th>Events</th>
-                                    <th style="width:10%">Actions</th>
+                                    <th>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>

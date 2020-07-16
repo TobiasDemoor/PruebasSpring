@@ -29,13 +29,23 @@ export default (state = stateInit, {type, payload, error}) => {
                 error: undefined
             };
         case userError:
+            // TODO: debug
             return {
                 ...state,
                 isLoading: false,
                 isAuthenticated: false,
+                csrfToken: payload.csrfToken,
                 user: undefined,
                 error
             };
+            // return {
+            //     ...state,
+            //     isLoading: false,
+            //     isAuthenticated: true,
+            //     csrfToken: payload.csrfToken,
+            //     user: {name: 'Prueba'},
+            //     error: undefined
+            // };
         default:
             return state;
     }
