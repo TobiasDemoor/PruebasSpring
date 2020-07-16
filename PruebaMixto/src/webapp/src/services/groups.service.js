@@ -1,20 +1,18 @@
 import handleResponse from "./response.service";
 
-const baseURL = 'http://localhost:8080';
-
-function loadGroups() {
-    return fetch(`${baseURL}/api/groups`, {credentials: 'include'})
+export function loadGroups() {
+    return fetch("/api/groups", {credentials: 'include'})
         .then(handleResponse);
 }
 
-function loadGroup(id) {
-    return fetch(`${baseURL}/api/groups/${id}`, {
+export function loadGroup(id) {
+    return fetch(`/api/groups/${id}`, {
         credentials: 'include'
     }).then(handleResponse);
 }
 
-function removeGroup(csrfToken, id) {
-    return fetch(`${baseURL}/api/groups/${id}`, {
+export function removeGroup(csrfToken, id) {
+    return fetch(`/api/groups/${id}`, {
         method: 'DELETE',
         headers: {
             'X-XSRF-TOKEN': csrfToken,
@@ -25,8 +23,8 @@ function removeGroup(csrfToken, id) {
     })
 }
 
-function editGroup(csrfToken, item) {
-    return fetch(`${baseURL}/api/groups` + (item.id ? '/' + item.id : ''), {
+export function editGroup(csrfToken, item) {
+    return fetch("/api/groups" + (item.id ? '/' + item.id : ''), {
         method: (item.id) ? 'PUT' : 'POST',
         headers: {
             'X-XSRF-TOKEN': csrfToken,
@@ -37,5 +35,3 @@ function editGroup(csrfToken, item) {
         credentials: 'include'
     });
 }
-
-export {loadGroups, loadGroup, removeGroup, editGroup};
