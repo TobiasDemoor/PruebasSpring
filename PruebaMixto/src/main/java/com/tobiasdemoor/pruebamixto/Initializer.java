@@ -1,45 +1,51 @@
 package com.tobiasdemoor.pruebamixto;
 
+import com.tobiasdemoor.pruebamixto.repositories.UserRepository;
+import com.tobiasdemoor.pruebamixto.security.AuthUser;
 import com.tobiasdemoor.pruebamixto.model.Event;
 import com.tobiasdemoor.pruebamixto.model.Group;
 import com.tobiasdemoor.pruebamixto.model.User;
 import com.tobiasdemoor.pruebamixto.repositories.AuthoritiesRepository;
 import com.tobiasdemoor.pruebamixto.repositories.GroupRepository;
-import com.tobiasdemoor.pruebamixto.repositories.UserRepository;
+import com.tobiasdemoor.pruebamixto.repositories.AuthUserRepository;
 import com.tobiasdemoor.pruebamixto.security.MyGrantedAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.stream.Stream;
 
 @Component
 public class Initializer implements CommandLineRunner {
-    private final UserRepository userRepository;
+    private final AuthUserRepository authUserRepository;
     private final GroupRepository groupRepository;
-    private final AuthoritiesRepository authoritiesRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder;
 
     @Autowired
-    public Initializer(UserRepository userRepository, GroupRepository groupRepository, AuthoritiesRepository authoritiesRepository) {
-        this.userRepository = userRepository;
+    public Initializer(AuthUserRepository authUserRepository, GroupRepository groupRepository, UserRepository userRepository, BCryptPasswordEncoder encoder) {
+        this.authUserRepository = authUserRepository;
         this.groupRepository = groupRepository;
-        this.authoritiesRepository = authoritiesRepository;
+        this.userRepository = userRepository;
+        this.encoder = encoder;
     }
 
     @Override
     public void run(String... args) throws Exception {
         User user = new User();
-        MyGrantedAuthority auth = new MyGrantedAuthority("ROLE_ADMIN");
-        user.setAuthorities(new HashSet<>());
-        user.setUsername("prueba");
-        user.setPassword("$2y$10$cT9xkZxxKeoj1L4mcs/VR.6Rvvm.H4020z4grN65Rc9.JOSWP0MYu");
-        user.addAuthority(auth);
+        AuthUser authUser = new AuthUser();
+        user.setName("Usuario prueba");
+        authUser.setAuthorities(new HashSet<>());
+        authUser.addAuthority(new MyGrantedAuthority("ROLE_ADMIN"));
+        authUser.setUsername("prueba");
+        authUser.setPassword(this.encoder.encode("prueba"));
+        authUser.setPublicUser(user);
         this.userRepository.save(user);
-        this.authoritiesRepository.save(auth);
+        this.authUserRepository.save(authUser);
 
         Stream.of("Denver JUG", "Utah JUG", "Seattle JUG",
                 "Richmond JUG").forEach(name ->
@@ -52,7 +58,7 @@ public class Initializer implements CommandLineRunner {
                 .date(Instant.parse("2018-12-12T18:00:00.000Z"))
                 .build();
         denverJug.setEvents(Collections.singleton(e));
-        denverJug.setOwner(user.getUsername());
+        denverJug.setOwner(authUser.getPublicUser());
         groupRepository.save(denverJug);
     }
 }

@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {TextField} from "@material-ui/core";
 import {connect} from "react-redux";
-import {withRouter} from 'react-router-dom';
-import {getUser, login} from "../store/user/userActions";
 import Button from "@material-ui/core/Button";
 
 
@@ -17,32 +15,30 @@ class LoginPage extends Component {
     }
 
     handleChange(event) {
-        const {value, name} = event.target;
+        const {value, id} = event.target;
         this.setState(
             (prevState) => ({
                 ...prevState,
-                [name]: value
+                [id]: value
             })
         )
     }
 
+    login() {
+        document.getElementById("loginSubmit").click();
+    }
+
     render() {
         const {username, password} = this.state;
-        const {user, csrfToken} = this.props;
-        if (!csrfToken) {
-            this.props.getUser();
-        }
-        if (user) {
-            this.props.history.push("/");
-        }
+        const {csrfToken} = this.props;
 
         return (
             <div>
-                <TextField fullWidth label="Username" id="username" value={username}
-                           onChange={this.handleChange} autoComplete="name"/>
-                <TextField fullWidth label="Password" id="password" type="password" value={password}
-                           onChange={this.handleChange} autoComplete="name"/>
-                <Button variant="contained" onClick={() => document.getElementById("loginSubmit").click()}>
+                <TextField required fullWidth label="Username" id="username" value={username}
+                           onChange={this.handleChange} autoComplete="username"/>
+                <TextField required fullWidth label="Password" id="password" type="password" value={password}
+                           onChange={this.handleChange} autoComplete="password"/>
+                <Button variant="contained" onClick={this.login}>
                     Login
                 </Button>
                 <form method="POST" action={"/api/login"}>
@@ -60,16 +56,8 @@ LoginPage.propTypes = {};
 
 function mapStateToProps(state) {
     return {
-        user: state.user.user,
         csrfToken: state.user.csrfToken
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return {
-        login: data => dispatch(login(data)),
-        getUser: () => dispatch(getUser())
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(LoginPage));
+export default connect(mapStateToProps)(LoginPage);

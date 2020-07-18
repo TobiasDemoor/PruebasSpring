@@ -8,13 +8,14 @@ import AppNavbar from './AppNavbar';
 
 class GroupList extends Component {
 
+
     componentDidMount() {
         this.props.loadGroups();
     }
 
     render() {
         const {groups, isLoading, remove, error} = this.props;
-        if (error) {
+        if (false) {
             this.props.history.push('/');
         } else {
             if (isLoading) {

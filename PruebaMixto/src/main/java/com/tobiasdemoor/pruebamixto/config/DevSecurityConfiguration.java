@@ -1,8 +1,6 @@
 package com.tobiasdemoor.pruebamixto.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,8 +12,6 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SimpleSavedRequest;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,20 +29,21 @@ public class DevSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
+        http.headers().frameOptions().disable();
+        http.cors().configurationSource((request -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.addAllowedOrigin(this.clientUrl);
+            config.addAllowedMethod(HttpMethod.DELETE);
+            config.addAllowedMethod(HttpMethod.GET);
+            config.addAllowedMethod(HttpMethod.OPTIONS);
+            config.addAllowedMethod(HttpMethod.PUT);
+            config.addAllowedMethod(HttpMethod.POST);
+            config.setAllowCredentials(true);
+            return config;
+        }));
         http
-                .cors().configurationSource((request -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.addAllowedOrigin(this.clientUrl);
-                    config.addAllowedMethod(HttpMethod.DELETE);
-                    config.addAllowedMethod(HttpMethod.GET);
-                    config.addAllowedMethod(HttpMethod.OPTIONS);
-                    config.addAllowedMethod(HttpMethod.PUT);
-                    config.addAllowedMethod(HttpMethod.POST);
-                    config.setAllowCredentials(true);
-                    return config;
-                })).and()
-                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and().authorizeRequests()
+                .authorizeRequests()
                 .antMatchers(
                         HttpMethod.GET,
                         "/**/*.{js,html,css}"
@@ -59,17 +56,23 @@ public class DevSecurityConfiguration extends WebSecurityConfigurerAdapter {
                         HttpMethod.GET,
                         "/api/user"
                 ).permitAll()
+                .antMatchers(
+                        HttpMethod.POST,
+                        "/api/user/"
+                ).permitAll()
+                .antMatchers("/console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().loginPage(this.clientUrl+"/login")
+                .formLogin().loginPage(this.clientUrl + "/login")
                 .loginProcessingUrl("/api/login")
-                .defaultSuccessUrl(this.clientUrl+"/",true)
-                .failureUrl(this.clientUrl+"/login?error=true")
+                .defaultSuccessUrl(this.clientUrl + "/", true)
+                .failureUrl(this.clientUrl + "/login?error=true")
                 .and()
                 .logout()
                 .logoutUrl("/api/logout")
-                .logoutSuccessUrl(this.clientUrl+"/")
+                .logoutSuccessUrl(this.clientUrl + "/")
                 .deleteCookies("JSESSIONID");
+
     }
 
     @Bean

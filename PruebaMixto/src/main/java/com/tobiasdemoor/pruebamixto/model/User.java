@@ -1,13 +1,14 @@
 package com.tobiasdemoor.pruebamixto.model;
 
-import com.tobiasdemoor.pruebamixto.security.MyGrantedAuthority;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 
 @Data
 @NoArgsConstructor
@@ -19,13 +20,5 @@ public class User {
     @Id
     private Long id;
 
-    private String username;
-    private String password;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
-    private Set<MyGrantedAuthority> authorities;
-
-    public void addAuthority(MyGrantedAuthority authority) {
-        this.authorities.add(authority);
-    }
+    private String name;
 }

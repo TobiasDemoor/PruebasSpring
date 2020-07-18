@@ -1,30 +1,34 @@
 package com.tobiasdemoor.pruebamixto.security;
 
-import com.tobiasdemoor.pruebamixto.model.User;
-import com.tobiasdemoor.pruebamixto.repositories.UserRepository;
+import com.tobiasdemoor.pruebamixto.repositories.AuthUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 
 @Component
 public class MyDatabaseUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final AuthUserRepository authUserRepository;
 
     @Autowired
-    public MyDatabaseUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public MyDatabaseUserDetailsService(AuthUserRepository authUserRepository) {
+        this.authUserRepository = authUserRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userRepository.findByUsername(username);
-        if (user == null) {
+        Optional<AuthUser> authUser = this.authUserRepository.findByUsername(username);
+        AuthUser user;
+        if (!authUser.isPresent()) {
             throw new UsernameNotFoundException(username);
+        } else {
+            user = authUser.get();
+            return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities());
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities());
     }
 }

@@ -1,22 +1,23 @@
 import * as groupsServices from '../../services/groups.service';
 
 export const actionTypes = {
-    loadGroupsRequest: 'LOAD_GROUPS_REQUEST',
+    groupsRequest: 'GROUPS_REQUEST',
+    groupsError: 'GROUPS_ERROR',
+
     loadGroupsSuccess: 'LOAD_GROUPS_SUCCESS',
-    loadGroupsError: 'LOAD_GROUPS_ERROR',
-
-    loadGroupRequest: 'LOAD_GROUP_REQUEST',
     loadGroupSuccess: 'LOAD_GROUP_SUCCESS',
-    loadGroupError: 'LOAD_GROUP_ERROR',
-
-    editGroupRequest: 'EDIT_GROUP_REQUEST',
+    removeGroupSuccess: 'REMOVE_GROUP_SUCCESS',
     editGroupSuccess: 'EDIT_GROUP_SUCCESS',
-    editGroupError: 'EDIT_GROUP_ERROR',
 }
+
+const errorAction = (error) => ({
+    type: actionTypes.groupsError,
+    error: error.message || error
+})
 
 export function loadGroups() {
     return function (dispatch) {
-        dispatch({type: actionTypes.loadGroupsRequest});
+        dispatch({type: actionTypes.groupsRequest});
         groupsServices.loadGroups()
             .then(
                 response => dispatch({
@@ -24,63 +25,51 @@ export function loadGroups() {
                     payload: { groups: response }
                 })
             )
-            .catch(
-                error => dispatch({
-                    type: actionTypes.loadGroupsError,
-                    error
-                })
-            );
+            .catch(error => dispatch(errorAction(error)));
     }
 }
 
 export function loadGroup(id) {
     return function (dispatch) {
-        dispatch({type: actionTypes.loadGroupRequest});
+        dispatch({type: actionTypes.groupsRequest});
         groupsServices.loadGroup(id)
             .then(
-                response => {
-                    console.log(response);
-                    dispatch({
-                        type: actionTypes.loadGroupSuccess,
-                        payload: {
-                            item: response
-                        }
-                    })
-                }
-            )
-            .catch(
-                error => dispatch({
-                    type: actionTypes.loadGroupError,
-                    error
+                response => dispatch({
+                    type: actionTypes.loadGroupSuccess,
+                    payload: {
+                        item: response
+                    }
                 })
-            );
+            )
+            .catch(error => dispatch(errorAction(error)));
     }
-}
-
-export function loadEmptyGroup() {
-    return {
-        type: actionTypes.loadGroupsSuccess,
-        payload: {
-            item: {
-                name: '',
-                address: '',
-                city: '',
-                stateOrProvince: '',
-                country: '',
-                postalCode: ''
-            }
-        }
-    };
 }
 
 export function removeGroup(id) {
     return function(dispatch, getState) {
-        // TODO
-        groupsServices.removeGroup(getState().user.csrfToken, id).then();
+        dispatch({type: actionTypes.groupsRequest})
+        groupsServices.removeGroup(getState().user.csrfToken, id)
+            .then(
+                () => dispatch({
+                    type: actionTypes.removeGroupSuccess,
+                    payload: {removedId: id}
+                })
+            )
+            .catch(error => dispatch(errorAction(error)));
     }
 }
 
-export function submitGroup(item) {
-
+export function editGroup(item) {
+    return function(dispatch, getState) {
+        dispatch({type: actionTypes.groupsRequest})
+        groupsServices.editGroup(getState().user.csrfToken, item)
+            .then(
+                response => dispatch({
+                    type: actionTypes.editGroupSuccess,
+                    payload: {newGroup: response}
+                })
+            )
+            .catch(error => dispatch(errorAction(error)));
+    }
 }
 

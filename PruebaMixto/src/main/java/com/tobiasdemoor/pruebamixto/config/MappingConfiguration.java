@@ -10,8 +10,8 @@ public class MappingConfiguration  implements WebServerFactoryCustomizer<Configu
     @Override
     public void customize(ConfigurableServletWebServerFactory factory) {
         MimeMappings mappings = new MimeMappings(MimeMappings.DEFAULT);
-        mappings.remove("js");
-        mappings.add("js", "application/javascript;charset=utf-8");
+//        mappings.remove("js");
+//        mappings.add("js", "application/javascript;charset=utf-8");
         mappings.remove("css");
         mappings.add("css", "text/css;charset=utf-8");
         factory.setMimeMappings(mappings);

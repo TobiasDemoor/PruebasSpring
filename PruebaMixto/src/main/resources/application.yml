@@ -5,11 +5,11 @@ spring:
         url: jdbc:h2:mem:testDB
         driver-class-name: org.h2.Driver
         username: sa
-        password: password
+        password:
     h2:
         console:
             enabled: true
-            path: /h2-console
+            path: /console
 
     jpa:
         show-sql: false

@@ -1,5 +1,6 @@
 package com.tobiasdemoor.pruebamixto.model;
 
+import com.tobiasdemoor.pruebamixto.security.AuthUser;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,5 +27,5 @@ public class Event {
     private String title;
     private String description;
     @ManyToMany
-    private Set<User> attendees;
+    private Set<AuthUser> attendees;
 }

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {loadGroup, submitGroup} from "../store/groups/groupsActions";
+import {loadGroup, editGroup} from "../store/groups/groupsActions";
 import AppNavbar from "./AppNavbar";
 import {Typography, Container, TextField, Button} from "@material-ui/core";
 import {withStyles} from "@material-ui/core/styles";
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 
 const styles = theme => ({
     buttons: {
@@ -35,18 +35,19 @@ class GroupEdit extends Component {
         } else {
             this.setState({
                 item: {
-                    name: '',
-                    address: '',
-                    city: '',
-                    stateOrProvince: '',
-                    country: '',
-                    postalCode: ''
+                    name: null,
+                    address: null,
+                    city: null,
+                    stateOrProvince: null,
+                    country: null,
+                    postalCode: null,
+                    events: []
                 }
             })
         }
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState, snapshot) {
         if (!this.state.item && this.props.item) {
             this.setState({item: this.props.item});
         }
@@ -61,7 +62,8 @@ class GroupEdit extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.submitGroup(this.state.item);
+        this.props.editGroup(this.state.item);
+        this.props.history.push("/groups");
     }
 
     render() {
@@ -118,10 +120,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         loadGroup: id => dispatch(loadGroup(id)),
-        submitGroup: item => dispatch(submitGroup(item))
+        editGroup: item => dispatch(editGroup(item))
     };
 }
 
 export default connect(
     mapStateToProps, mapDispatchToProps
-)(withStyles(styles)(GroupEdit));
+)(withStyles(styles)(withRouter(GroupEdit)));

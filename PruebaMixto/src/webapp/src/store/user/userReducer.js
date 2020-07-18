@@ -5,21 +5,20 @@ const stateInit = {
     user: undefined,
     error: undefined,
     isLoading: true,
-    isAuthenticated: false
+    isAuthenticated: false,
+    sgUpError: undefined
 };
-
-const {userRequest, userSuccess, userError} = actionTypes;
 
 export default (state = stateInit, {type, payload, error}) => {
     switch (type) {
-        case userRequest:
+        case actionTypes.userRequest:
             return {
                 ...state,
                 isLoading: true,
                 isAuthenticated: false,
                 error: undefined
             };
-        case userSuccess:
+        case actionTypes.userSuccess:
             return {
                 ...state,
                 isLoading: false,
@@ -28,8 +27,7 @@ export default (state = stateInit, {type, payload, error}) => {
                 user: payload.user,
                 error: undefined
             };
-        case userError:
-            // TODO: debug
+        case actionTypes.userError:
             return {
                 ...state,
                 isLoading: false,
@@ -38,14 +36,26 @@ export default (state = stateInit, {type, payload, error}) => {
                 user: undefined,
                 error
             };
-            // return {
-            //     ...state,
-            //     isLoading: false,
-            //     isAuthenticated: true,
-            //     csrfToken: payload.csrfToken,
-            //     user: {name: 'Prueba'},
-            //     error: undefined
-            // };
+        case actionTypes.signUpRequest:
+            return {
+                ...state,
+                isLoading: true,
+                user: undefined,
+                sgUpError: undefined
+            };
+        case actionTypes.signUpSuccess:
+            return {
+                ...state,
+                isLoading: false,
+                user: payload.user,
+                sgUpError: undefined
+            }
+        case actionTypes.signUpError:
+            return {
+                ...state,
+                isLoading: false,
+                sgUpError: error
+            }
         default:
             return state;
     }

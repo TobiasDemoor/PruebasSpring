@@ -25,7 +25,8 @@ public class Group {
     private String stateOrProvince;
     private String country;
     private String postalCode;
-    private String owner;
+    @ManyToOne
+    private User owner;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Event> events;

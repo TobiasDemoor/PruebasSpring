@@ -20,18 +20,20 @@ export function removeGroup(csrfToken, id) {
             'Content-Type': 'application/json'
         },
         credentials: 'include'
-    })
+    }).then(handleResponse);
 }
 
 export function editGroup(csrfToken, item) {
-    return fetch("/api/groups" + (item.id ? '/' + item.id : ''), {
-        method: (item.id) ? 'PUT' : 'POST',
-        headers: {
-            'X-XSRF-TOKEN': csrfToken,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(item),
-        credentials: 'include'
-    });
+    return fetch(
+        "/api/groups/" + (item.id? item.id + '/':''),
+        {
+            method: (item.id) ? 'PUT' : 'POST',
+            headers: {
+                'X-XSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(item),
+            credentials: 'include'
+        }).then(handleResponse);
 }

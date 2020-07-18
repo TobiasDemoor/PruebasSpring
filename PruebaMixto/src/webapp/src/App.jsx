@@ -4,6 +4,8 @@ import Home from './components/Home';
 import LoginPage from "./components/LoginPage";
 import GroupEdit from "./components/GroupEdit";
 import GroupList from "./components/GroupList";
+import SignUpPage from "./components/SignUpPage";
+import PrivateRoute from "./helpers/PrivateRoute";
 import './App.css';
 
 
@@ -12,9 +14,10 @@ function App() {
         <BrowserRouter className="App">
             <Switch>
                 <Route path='/' exact={true} component={Home}/>
-                <Route path='/login' component={LoginPage}/>
-                <Route path='/groups/:id' component={GroupEdit}/>
-                <Route path='/groups' component={GroupList}/>
+                <PrivateRoute authorized={false} path='/login' component={LoginPage}/>
+                <PrivateRoute authorized={false} path='/signUp' component={SignUpPage}/>
+                <PrivateRoute path='/groups/:id' component={GroupEdit}/>
+                <PrivateRoute path='/groups' component={GroupList}/>
             </Switch>
         </BrowserRouter>
     );

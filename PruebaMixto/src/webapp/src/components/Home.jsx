@@ -23,7 +23,7 @@ class Home extends Component {
         } else {
             let message, buttons
             if (isAuthenticated) {
-                message = <p>Welcome, {user.username}</p>;
+                message = <p>Welcome, {user.name}</p>;
                 buttons = (
                     <div>
                         <Button component={Link} to="/groups">Manage JUG Tour</Button>
@@ -39,6 +39,7 @@ class Home extends Component {
                 buttons = (
                     <div>
                         <Button component={Link} to="/login">Login</Button>
+                        <Button component={Link} to="/signUp">Sign Up</Button>
                     </div>
                 );
             }

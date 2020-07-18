@@ -6,9 +6,9 @@ export const actionTypes = {
     userSuccess: 'USER_SUCCESS',
     userError: 'USER_ERROR',
 
-    loginRequest: 'LOGIN_REQUEST',
-    loginSuccess: 'LOGIN_SUCCESS',
-    loginError: 'LOGIN_ERROR'
+    signUpRequest: 'SIGN_UP_REQUEST',
+    signUpSuccess: 'SIGN_UP_SUCCESS',
+    signUpError: 'SIGN_UP_ERROR'
 };
 
 export function getUser() {
@@ -19,7 +19,7 @@ export function getUser() {
                 response => dispatch({
                     type: actionTypes.userSuccess,
                     payload: {
-                        csrfToken: getCookie('XSRF-TOKEN'),
+                        csrfToken: getCookie('XSRF-TOKEN') || "placeholder",
                         user: response
                     }
                 }))
@@ -27,25 +27,31 @@ export function getUser() {
                 error => dispatch({
                     type: actionTypes.userError,
                     payload: {
-                        csrfToken: getCookie('XSRF-TOKEN')
+                        csrfToken: getCookie('XSRF-TOKEN') || "placeholder"
                     },
-                    error: error.message
+                    error: error.message || error
+                })
+            );
+    }
+}
+
+export function signUp(data) {
+    return function (dispatch, getState) {
+        const {name, ...rest} = data;
+        dispatch({type: actionTypes.signUpRequest});
+        userServices.signUp(getState().user.csrfToken, {...rest, publicUser: {name}})
+            .then(
+                response => dispatch({
+                    type: actionTypes.signUpSuccess,
+                    payload: {user: response}
+                })
+            )
+            .catch(
+                error => dispatch({
+                    type: actionTypes.signUpError,
+                    error: error.message || error
                 })
             );
     }
 
-}
-
-export function login(data) {
-    return function (dispatch, getState) {
-        dispatch({type: actionTypes.loginRequest})
-        userServices.login(getState().user.csrfToken, data)
-            .then(() => dispatch({
-                type: actionTypes.loginSuccess
-            }))
-            .catch(error => dispatch({
-                type: actionTypes.loginError,
-                error: error.message
-            }));
-    }
 }
